@@ -1,0 +1,65 @@
+
+html {
+font-family: 'Open Sans Condensed', sans-serif;
+/*
+ background-size: 33%;
+  background-image: url("img/card-bg.png");
+  */
+  margin: 0px;
+  padding: 0px;
+   
+}
+
+h1 {
+font-family: 'Patrick Hand SC', cursive; 
+margin: 0px;
+ }
+
+h2 {
+font-family: 'Patrick Hand SC', cursive; 
+ }
+
+h3 {
+font-family: 'Patrick Hand SC', cursive; 
+ }
+
+h5 {
+	font-size: 120%;
+font-family: 'Patrick Hand SC', cursive;
+margin: 0px; 
+ }
+
+
+
+.header-bar {
+	white-space: nowrap;
+	overflow: scroll;
+}
+
+.header-img {
+	height: 270px;
+}
+.diagram-img {
+ display: block;
+    margin: 0 auto;
+	max-width: 400px;
+}
+
+.diagram-img-double {
+ display: inline-block;
+
+}
+
+.diagram-img-max {
+ display: block;
+    margin: 0 auto;
+	width: 100%;
+}
+
+.page-content {
+	background: white;
+	padding: 10px;
+	box-shadow: 0px 0px 30px rgba(0, 0, 0, .5);
+	margin: 0 auto;
+	max-width: 2600px;
+}

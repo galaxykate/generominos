@@ -1,0 +1,149 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<title>Tracery - anchor</title>
+	<meta name="description" content="The HTML5 Herald">
+	<meta name="author" content="SitePoint">
+	<link rel="stylesheet" href="css/page.css?v=1.0">
+	<link rel="stylesheet" href="css/cards.css?v=1.0">
+	<link href="https://fonts.googleapis.com/css?family=Bad+Script|Open+Sans+Condensed:300|Patrick+Hand|Patrick+Hand+SC|Reenie+Beanie|Roboto|Walter+Turncoat" rel="stylesheet">
+
+</head>
+
+<body class="page">
+	<header></header>
+	<div class="page-body">
+		<main class="page-content section">
+
+			<div class="header-bar">
+				<img src="img/example-good1.png" alt="an example diagram of Generominos" class="header-img"> <img src="img/example-good.png" class="header-img" alt="an example diagram of Generominos"> <img src="img/example-good2.png" alt="an example diagram of Generominos" class="header-img"> 
+			</div>
+			<h1 class="title">Generominos</h1>
+			<h5>A construction set for generative interactive artwork, 
+				by <a href="https://twitter.com/GalaxyKate">Kate Compton</a></h5>
+
+				<div>
+					<div><a href="generominos.pdf">Download a print-your-own deck of Generominos</a></div>
+				</div>
+				
+				<h2>What are the Generominos?</h2>
+				<p>
+					The Generominos are a physical instantiation of a new framework by <a href="https://twitter.com/GalaxyKate">Kate Compton</a> for thinking about generative interactive art and games.  
+				</p>
+
+
+				<p>
+					Generative methods often involve taking one kind of data and <b>transforming</b> it into another. 
+					<p> Interactive works often involve using novel interfaces to <b>generate</b> a feed of data, and also use interesting output devices to display some feed of data.
+					</p>
+					So a generative interactive system can be modeled as a pipeline of data streams:
+					<ul>
+						<li>Data streams are created by inputs</li>
+						<li>The data undergoes a chain of transformations</li>
+						<li>The resulting data streams are output somehow</li>
+					</ul>
+
+					<p>
+						...But data comes in many forms: numbers, text, vectors, graphs, and more!
+					</p>
+					<p>
+						Data streams can't magically convert from one type to another.  But, many kinds of transformations are available as tools to turn one data-type into another.  Sometimes these transformations even generate new interesting kinds of data themselves. 
+					</p>
+
+					<p>The <a href="www.galaxykate.com/generominos">Generominos</a> cards are a constructive model of how pipelines transform the datastreams generated from inputs into the type of data needed by the outputs, though a series of compatible transformations.  Like Dominos, each card has some <b>sockets</b>, only in this case, we can have several sockets for input (on the top), and several for output (on the bottom).  Some cards may not have input sockets, others may not have output sockets.
+
+					Here is an example card:
+					</p>
+						<img src="img/card-data-basic.png" class="diagram-img">
+<p>
+Each icon represents a different kind of data stream that might be created or used by this transformation.
+
+There are 17 kinds of data streams, and 3 specialty input types:
+</p>
+
+
+						<div class="diagram-img" id="cheat-holder"></div>
+
+					<h2>Using the Generominos to create a diagram</h2>
+					<p>
+To create a diagram of a system, match the output symbols of a card to the input symbols of another card.  Not all outputs need to be used (you can always ignore output), but all solid-lined inputs need to have a source (dashed lines are optional). 
+<p>
+Here is a diagram of a system created by one of our playtesters, using the output of the stock market's value to control a fire effect.  So as the stock market booms and busts, the intensity of the fire with change:
+</p>
+
+	<img src="img/card-data.png" class="diagram-img">
+
+
+	
+	<p>
+There are many Input cards, which don't need inputs of their own.  Some of these have an icon on the top right side: this is the "user" icon.  You can change who or what is controlling the input by matching these icons left-to-right, to create, for example: 
+</p>
+<img src="img/card-inputs.png" class="diagram-img">
+<p>"an accelerometer held by a person, who is the artist themself", or "existing text, from a particular user, who doens't know they're controlling the art with their text"</p>
+					</p>
+				
+					<h2>Example: Idle Hands</h2>
+<p>Idle Hands is an interactive generative art piece that I exhibited at the UnScruz outdoor art festival in 2017. It uses a Leap Motion to control a continuously-update Voronoi diagram, which is rendered and projected onto a screen.
+<p>
+The diagram of the system looks like this:
+<img src="img/idlehandsdiagram.png" class="diagram-img">
+<p>
+Because the LeapMotion creates a pipeline of several dozen continously updating points (the positions of the finger joints), I can easily turn that into the input of the Voronoi diagram, without losing any data.  This creates a smooth and emergent feeling of interaction (without a lot of programming complexity) as seen from these videos
+</p>
+				
+				<img src="img/idlehands-adult.gif" class="diagram-img-double">
+				<img src="img/idlehands-kid.gif" class="diagram-img-double">
+
+				<h2>Using Generominos as a teaching tool</h2>
+
+
+<img src="img/all.png" class="diagram-img">
+
+	<p><a href="http://edwardmelcer.net/">Eddie Melcer</a> helped me test this as a teaching tool in his 2017 Alternative Controllers upper-division undergrad class at UC Santa Cruz.  The images in the header are examples of systems that were diagramed by the students as part of this (IRB expempted) study.
+	<p>
+	<p>The students found it helpful, as measured by their post-activity survey.  But also, as instructors, we found their brainstormed projects from this activity to often be more interesting and creative than the ones they initially pitched in the class, so this seems to help improve out-of-the-box thinking for designing systems like these.
+	</p>
+	<p>
+	Want to use these as a brainstorming tool in your class? Print out your own copies, but also, let us know! I'd love to see more data on how these are used and how to improve them!
+	</p>
+					
+
+<img src="img/results.png" class="diagram-img-max">
+
+
+				<div>
+					<div><a href="generominos.pdf">Download a print-your-own deck of Generominos</a></div>
+				</div>
+
+					<p>
+
+						<h2>License</h2>
+						<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/InteractiveResource" property="dct:title" rel="dct:type">Generominos</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="www.galaxykate.com/generominos" property="cc:attributionName" rel="cc:attributionURL">Kate Compton</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.<br />Based on a work at <a xmlns:dct="http://purl.org/dc/terms/" href="www.galaxykate.com/generominos" rel="dct:source">www.galaxykate.com/generominos</a>.
+					</p>
+				</main>
+
+			</div>
+
+
+			<footer></footer>
+
+
+
+			<script type="text/javascript" src="js/vendor/jquery-2.1.4.min.js"></script>
+			<script type="text/javascript" src="js/vendor/jquery-ui.min.js"></script>
+			<script type="text/javascript" src="js/vendor/seedrandom.js"></script>
+			<script type="text/javascript" src="js/vendor/inheritance.js"></script>
+			<script type="text/javascript" src="js/vendor/simplex_noise.js"></script>
+			<script type="text/javascript" src="js/common.js"></script>
+
+
+			<script type="text/javascript" src="js/tracery-utilities.js"></script>
+			<script type="text/javascript" src="js/app-page.js"></script>
+			<script type="text/javascript" src="js/card.js"></script>
+			<script type="text/javascript" src="js/data.js"></script>
+
+		</body>
+		</html>
