@@ -1,47 +1,346 @@
-/* 
- * Parse lines into data
- */
+// UTILITY
+// Split the string into top-level sections
+// Some open-chars open a new section
 
-
-
-function parseLines(lines, headerIndices) {
-
-	var cells = lines.split("\n").map(function(line) {
-		return line.split("\t");
-	});
+function splitIntoTopSections(s, settings) {
 
 	
+	if (typeof s !== "string")
+		console.warn("non-string", s);
 
-	console.log(cells[1]);
+	if (!settings)
+		settings = {};
 
-	// Add the data from the header index
-	var data = {};
-	for (var i = 0; i < headerIndices.length; i++) {
-		var next = cells[0].length;
-		if (i < headerIndices.length - 1)
-			next = headerIndices[i + 1].index;
+	// rule settings
+	if (settings.sectionTypes === undefined)
+		settings.sectionTypes = ["[", "#"];
 
-		var header = headerIndices[i];
-	//	console.log(header.name + ": " + header.index + "-" + next);
-		// Scrape all the data from these columns
-		data[header.name] = cells.map(function(cellRow) {
-			return cellRow.slice(header.index, next);
-		});
+	settings.onCloseSection = function(section) {
+
+		// Open top-level sections only
+		var isTopSection = (section.depth === 1) && (settings.sectionTypes.indexOf(section.openChar) >= 0);
+
+		if (isTopSection) {
+			var topSection = section;
+			start = section.end + 1;
+			sections.push(topSection);
+		}
+	};
+
+	settings.onOpenSection = function(section) {
+
+		var isTopSection = (section.depth === 1) && (settings.sectionTypes.indexOf(section.openChar) >= 0);
+
+		if (isTopSection) {
+
+			// Make a base-level section from the last section to the start of this one
+			var topSection = {
+
+				depth: 0,
+				start: start,
+				end: section.start,
+				inner: s.substring(start, section.start)
+			};
+			start = section.start;
+			sections.push(topSection);
+		}
+	};
+
+	settings.error = function(error) {
+		sections.errors.push(error);
+	};
+
+	// Initialize the section list
+	var sections = [];
+	var start = 0;
+	parseProtected(s, settings);
+
+	// Add the last section
+	sections.push({
+		depth: 0,
+		start: start,
+		end: s.length,
+		inner: s.substring(start)
+	});
 
 
 
-	}
-
-	$.each(data, function(type, dataset) {
-		$.each(dataset, function(index, cardData) {
-		
-			if (cardData.length > 1 && cardData[0] !== "")
-				var card = new SVGCard(type, cardData);
-		});
+	sections = sections.filter(function(s) {
+		if (!settings.ignoreEmptySections && s.depth > 0)
+			return true;
+		return s.inner.length > 0;
 	})
+
+	return sections;
 }
 
 
-//var cardSettings = "	Inputs	output			transformations	from					renderings					\n3	keyboard	text		1	Voronoi	points		graph		1	sound volume	scalar	1	overlaid on nature	1	a pair of interactors\n3	mouse	points		1	Delaunay	points		graph		2	LED brightness	scalar	1	in a public street	1	a crowd of interactors\n3	kinect	points	depth map	1	detect contours	depth map		[contour lines]curves		1	projection on fog	image	1	on a dress at a fashion show	1	'Ender's Game' interactors don't know their input is being used for art\n3	leap motion	points		1	Stipplegen	depth map		[point distribution]points		3	servo motor	scalar	1	embedded in a tree	1	interactors and viewers aren't the same people\n2	webcam	image		1	calculate gradient	depth map		[gradient directions]vector field		2	LCD screen	image	1	in a commercial gallery	1	interactors and viewers aren't the same species\n1	footsteps	points		2	subtractive motion detection	image		depth map		2	virtual reality	image	1	in a museum gallery	1	interactors and viewers aren't in the same location\n1	drawings on persistent surface	image		4	perlin noise 2D	scalar		depth map	vector field	5	projection on screen	image				\n5	music	sound		4	perlin noise 	scalar		scalar		1	projection on very small screen	image				\n2	voice	sound	text	2	sine curve	scalar		scalar		1	projection on very large screen	image				\n0	blink tracking	scalar		4	construct curve over time	points		curves		1	projection on architecture	image				\n1	squishy touchscreen	depth map		2	mask image	image	depth map	image		1	projection on/in living being	image				\n1	touchscreen	points		3	simulate as particles	points	vector field (gravity)	points		1	print-on-demand	image				\n1	time	scalar		2	render as lights	points		image		1	projection on translucent material	image				\n2	stock market data	scalar		1	pottery wheel	curves		[extruded object]3D object								\n3	famous text corpora (Emma, etc)	text		2	calligraphic rendering	curves		image								\n2	tweets	text		1	render as grass	vector field	[optional color]image	image								\n1	photos	images		10	debug draw	any		image								\n1	microbe tracking	points		2	Monte Carlo Markov Chain	text	graph	[regenerated text]text								\n2	tilt sensor	scalar		1	uniform vector field	[direction]scalar	[direction]scalar	vector field								\n2	proximity sensor	scalar		1	get magnitude	vector field		depth map								\n3	tracery-text	text		1	simulate Braitenberg vehicles	vector field		points								\n1	pendulum swings	scalar		1	sentiment analysis	text		scalar								\n1	global wind speed	vector field		5	render text	text		image								\n1	an ant farm	image		2	split text to particles	text		points								\n2	a joystick	scalar [force]	scalar [direction]		photo labelling	photo		text								\n2	face tracking	points			quilt pattern	image	scalar[tuning]	graph								\n1	eye tracking	vector field			pixelization	image		image								\n1	laser-pointer tracking	points			deepforger	image	image	image								\n1	Conways game of life	depth map			flocking	scalar[cohesion]	scalar[alignment]	curves								\n1	Fabric switches	scalar			simulated theremin	scalar	scalar	sound								\n1	skin conductivity	scalar			get amplitude	sound		curve								\n					get pitch	sound		curve								\n					abc notation	text		sound								\n					volume adjustment	scalar	sound	sound								\n					pitch adjustment	scalar	sound	sound								";
+function splitOnUnprotected(s, splitters, saveSplitters, settings) {
 
-var cardSettings = "3	keyboard	text		1	Voronoi	points		graph		1	sound volume	scalar	1	overlaid on nature	1	a pair of interactors\n3	mouse	points		1	Delaunay	points		graph		2	LED brightness	scalar	1	in a public street	1	a crowd of interactors\n3	kinect	points	depth map	1	detect contours	depth map		[contour lines]curves		1	projection on fog	image	1	on a dress at a fashion show	1	'Ender's Game' interactors don't know their input is being used for art\n3	leap motion	points		1	Stipplegen	depth map		[point distribution]points		3	servo motor	scalar	1	embedded in a tree	1	interactors and viewers aren't the same people\n2	webcam	image		1	calculate gradient	depth map		[gradient directions]vector field		2	LCD screen	image	1	in a commercial gallery	1	interactors and viewers aren't the same species\n1	footsteps	points		2	subtractive motion detection	image		depth map		2	virtual reality	image	1	in a museum gallery	1	interactors and viewers aren't in the same location\n1	drawings on persistent surface	image		4	perlin noise 2D	scalar		depth map	vector field	5	projection on screen	image				\n5	music	sound		4	perlin noise 	scalar		scalar		1	projection on very small screen	image				\n2	voice	sound	text	2	sine curve	scalar		scalar		1	projection on very large screen	image				\n0	blink tracking	scalar		4	construct curve over time	points		curves		1	projection on architecture	image				\n1	squishy touchscreen	depth map		2	mask image	image	depth map	image		1	projection on/in living being	image				\n1	touchscreen	points		3	simulate as particles	points	vector field (gravity)	points		1	print-on-demand	image				\n1	time	scalar		2	render as lights	points		image		1	projection on translucent material	image				\n2	stock market data	scalar		1	pottery wheel	curves		[extruded object]3D object		1	3D printed	3D				\n3	famous text corpora (Emma, etc)	text		2	calligraphic rendering	curves		image		1	played on a speaker	sound				\n2	tweets	text		1	render as grass	vector field	[optional color]image	image			printed on fabric	image				\n1	photos	images		10	debug draw	any		image			knitting instructions	scalar				\n1	microbe tracking	points		2	Monte Carlo Markov Chain	text	graph	[regenerated text]text								\n2	tilt sensor	scalar		1	uniform vector field	[direction]scalar	[direction]scalar	vector field								\n2	proximity sensor	scalar		1	get magnitude	vector field		depth map								\n3	tracery-text	text		1	simulate Braitenberg vehicles	vector field		points								\n1	pendulum swings	scalar		1	sentiment analysis	text		scalar								\n1	global wind speed	vector field		5	render text	text		image								\n1	an ant farm	image		2	split text to particles	text		points								\n2	a joystick	scalar [force]	scalar [direction]		photo labelling	photo		text								\n2	face tracking	points			quilt pattern	image	scalar[tuning]	graph								\n1	eye tracking	vector field			pixelization	image		image								\n1	laser-pointer tracking	points			deepforger	image	image	image								\n1	Conway's game of life	depth map			flocking	scalar[cohesion]	scalar[alignment]	curves								\n1	Fabric switches	scalar			simulated theremin	scalar	scalar	sound								\n1	skin conductivity	scalar			get amplitude	sound		curve								\n					get pitch	sound		curve								\n					abc notation	text		sound								\n					volume adjustment	scalar	sound	sound								\n					pitch adjustment	scalar	sound	sound								\n					sample pixels	image		[color]scalar	[brightness]scalar							\n																";
+	if (typeof s !== "string")
+		console.warn("non-string", s);
+
+	if (s.length === 0)
+		return [];
+
+	if (!settings)
+		settings = {};
+
+	if (typeof splitters === 'string' || splitters instanceof String)
+		splitters = [splitters];
+	var sections = [];
+	var lastSplitterEnd = 0;
+
+	settings.onChar = function(c, index, depth) {
+
+		// If at an unprotected level, 
+		// *and* we're no longer in a splitter (for ambiguous splitters like "::" and ":")
+		// This uses a greedy algorithm, so might miss 'optimal' splits
+		if (depth === 0 && index >= lastSplitterEnd) {
+			var splitter = undefined;
+
+			// Find the longest valid splitter
+			var maxLength = 0;
+			for (var i = 0; i < splitters.length; i++) {
+
+				var s2 = splitters[i];
+				if (s.startsWith(s2, index) && s2.length > maxLength) {
+					splitter = {
+						splitterIndex: i,
+						index: index,
+						splitter: s2,
+					}
+					maxLength = s2.length;
+				}
+			}
+
+			if (splitter) {
+				var s3 = s.substring(lastSplitterEnd, index);
+				sections.push(s3);
+				lastSplitterEnd = index + splitter.splitter.length;
+
+				// Add the splitter to the array if we want to record it
+				if (saveSplitters) {
+					sections.push(splitter);
+				}
+			}
+		}
+	};
+
+	parseProtected(s, settings);
+	sections.push(s.substring(lastSplitterEnd));
+	return sections;
+}
+
+
+/*
+ * Get indices of unprotected
+ * Find each unprotected query
+ * settings 
+ * simplifiedResults: return only the indices, not which query was found
+ */
+
+function getUnprotectedIndices(s, queries, settings) {
+
+
+	if (settings === undefined)
+		settings = {};
+
+	// wrap single queries in an array
+	if (typeof queries === 'string' || queries instanceof String)
+		queries = [queries];
+	var indices = [];
+	var start = 0;
+
+
+	settings.onChar = function(c, index, depth) {
+
+		if (index >= start && depth === 0) {
+
+			var found = [];
+
+			// Check which queries can be found from this index
+			var maxLength = 0;
+			for (var i = 0; i < queries.length; i++) {
+				// Record all queries found
+				// for ambiguous queries ("startling" for "s", "star", "start", etc), 
+				//    choose the first, unless settings say otherwise
+				if (s.startsWith(queries[i], index)) {
+					found.push([i, queries[i]]);
+					// skip the rest if we're prioritizing just by first found
+					if (!settings.prioritizeLongest && !settings.getAll)
+						break;
+				}
+			}
+
+			if (found.length > 0) {
+
+				if (settings.prioritizeLongest) {
+					found.sort(function(a, b) {
+						return a[1].length - b[1].length;
+					})
+				}
+
+				if (!settings.getAll) {
+					found = found.slice(0, 1);
+					start = index + found[0][1].length;
+				}
+
+				for (var i = 0; i < found.length; i++) {
+					// add to the index list
+					if (settings && settings.simplifiedResults) {
+						indices.push(index);
+					} else {
+						indices.push({
+							index: index,
+							query: found[i][1],
+							queryIndex: found[i][0],
+						});
+					}
+				}
+			}
+		}
+	};
+
+	parseProtected(s, settings);
+
+	return indices;
+}
+
+
+
+// UTILITY Hero function
+// Runs all the parsing stuff
+
+// Example input:
+// 	#stuff.foo(['test#bar#'])#  
+// 	#stuff.foo('feelin' #emotion#')#  
+// 	feelin' )'( :-} #foo.test('foo {#protectThis#} :-)')#
+// Outermost layers can ignore non-starting symbols, like ' " ( {
+// But inner layers have to watch them
+
+//	parseProtected("feelin' )'( :-} #foo.test('foo {#protectThis#} :-)')#");
+//	parseProtected("feelin' \\# )'( :-} #foo.test('foo {#protectThis#} :-)')#");
+
+function parseProtected(s, settings) {
+	if (!settings)
+		settings = {};
+
+	// Defaults
+	var openChars = ["[", "#", "{", "(", "'", '"'];
+	var closeChars = ["]", "#", "}", ")", "'", '"'];
+	var firstLevelIgnore = [""];
+	if (settings.firstLevelIgnore !== undefined)
+		firstLevelIgnore = settings.firstLevelIgnore;
+	if (settings.openChars !== undefined)
+		openChars = settings.openChars;
+	if (settings.closeChars !== undefined)
+		closeChars = settings.closeChars;
+
+	var sectionStack = [];
+	var topSection;
+	var escaped = false;
+
+	for (var i = 0; i < s.length; i++) {
+
+		// Ignore the escape chars
+		if (escaped) {
+			escaped = false;
+		} else {
+
+			var c = s.charAt(i);
+
+			// Deal with escape char
+			if (c === "\\")
+				escaped = true;
+
+			else {
+
+				// Top priority: can we close the current top section?
+				if (topSection !== undefined && topSection.closeChar === c) {
+
+					// Close this section
+					topSection.end = i;
+					topSection.inner = s.substring(topSection.start + 1, topSection.end);
+
+					//	console.log(tabSpacer(topSection.depth) + topSection.openChar + "  close " + inQuotes(topSection.inner));
+
+
+					if (settings.onCloseSection)
+						settings.onCloseSection(topSection);
+
+					// Pop it off the stack and set the new top section
+					sectionStack.pop();
+					topSection = sectionStack[sectionStack.length - 1];
+
+				} else {
+					// Is this character an opening character?
+					var openIndex = openChars.indexOf(c);
+
+					// Is this also a closing character?  what does it close?
+					var closeIndex = closeChars.indexOf(c);
+
+					// If we are at the base level, 
+					//  ignore opening and closing except for the appropriate chars
+					//console.log(firstLevelIgnore.indexOf(c), c, sectionStack.length);
+					if (sectionStack.length === 0 && firstLevelIgnore.indexOf(c) >= 0) {
+						//	console.log("Ignoring the " + c);
+						closeIndex = -1;
+						openIndex = -1;
+					}
+
+					// Regardless, do something with it
+					if (settings.onChar)
+						settings.onChar(c, i, sectionStack.length, s);
+
+					// If its not an opening character, 
+					//  but it *should* close something other than the current section, 
+					//  then this is an error
+					if (openIndex < 0 && closeIndex >= 0) {
+						if (settings.onError)
+							settings.onError("Unmatched " + inQuotes(c) + " at " + i);
+					}
+
+					// open a new section
+					if (openIndex >= 0) {
+
+						// Create a new section
+						var topSection = {
+								openChar: openChars[openIndex],
+								closeChar: closeChars[openIndex],
+								start: i,
+								depth: sectionStack.length + 1,
+							}
+							//console.log(tabSpacer(topSection.depth) + topSection.openChar + "  new section ");
+
+						sectionStack.push(topSection);
+
+
+
+						if (settings.onOpenSection)
+							settings.onOpenSection(topSection);
+
+					} else {
+
+
+						if (settings.onChar)
+							settings.onChar(c, i, sectionStack.length, s);
+					}
+				}
+			}
+		}
+	}
+
+
+
+	for (var i = 0; i < sectionStack.length; i++) {
+
+		if (settings.onError) {
+			settings.onError("Unmatched " + inQuotes(sectionStack[i].openChar) + " at " + sectionStack[i].start);
+		}
+	}
+
+	if (settings.onEnd)
+		settings.onEnd(depth);
+
+}
