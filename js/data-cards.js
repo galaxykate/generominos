@@ -1,3 +1,19 @@
+/*
+ * Card data
+ * Create new Generominos cards here
+ * I'd recommend making a new entry in CardData for your custom cards, eg
+ *    var cardData = {
+ *	    katesCards: [{...},
+ * 
+ * A card must have a name, and an optional description
+ * The type of card is set by which inputs and outputs it has
+ * Input cards have "modOut" and "output" data types
+ * Output cards have "input" data types, and no others
+ * Transformation cards have "input" data types and "output" data types
+ * Input modifier cards have "modIn" and "modOut"(optional) types
+ * Output modifier cards have no data types
+ */
+
 var cardData = {
 
 	standardInput: [{

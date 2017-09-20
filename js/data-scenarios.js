@@ -1,4 +1,7 @@
-
+/* 
+ * Create new scenarios
+ * Each scenarion has a title and constraints (line breaks as |)
+ */
 
 var scenarios = [{
 		title: "Science Museum installation",

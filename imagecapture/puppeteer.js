@@ -1,3 +1,9 @@
+/* 
+ * Automatically generate cards with Puppeteer
+ * Currently set up to work with *just* the Generominos base cards
+ * so if exporting cards, disable the cheatsheet drawing in app.js
+ */
+
 console.log("doing puppeteer things!")
 
 
@@ -7,6 +13,8 @@ const dim = {
 	x: 823,
 	y: 597
 };
+const cardCount = 160;
+
 const tileCount = 1;
 
 (async() => {
@@ -19,7 +27,7 @@ const tileCount = 1;
 	await page.goto('file:///Users/Compton/Dropbox/Code/galaxykate/generominos/cardgenerator.html');
 
 	var indices = [];
-	for (var i = 0; i < 160; i++) {
+	for (var i = 0; i < cardCount; i++) {
 		indices[i] = i;
 	}
 

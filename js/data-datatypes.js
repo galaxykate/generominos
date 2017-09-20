@@ -1,6 +1,8 @@
 
 /*
  * Data types for the cards
+ * Each data type needs a color, shadow, faint CSS color.  I recommend HSL, but you do you.
+ * It also requires a articons_NAME.png icon in the css/img folder (mine are 267x267, not sure why)
  */
 
 var inputColor = "hsla(235, 60%, 84%, 1)";
