@@ -3,7 +3,7 @@ Creative ideation cards for generative frameworks
 
 ## Motivation
 
-This is a project by @galaxykate Kate Compton to create a deck of cards to design generative interactive artworks and games.  It's been playtested by lots of patient people.  You can read more, including academic papers, user studies, and sample projects at [www.galaxykate.com/generonimos](http://www.galaxykate.com/generominos/)
+This is a project by @galaxykate Kate Compton to create a deck of cards to design generative interactive artworks and games.  It's been playtested by lots of patient people.  You can read more, including academic papers, user studies, and sample projects at [www.galaxykate.com/generominos](http://www.galaxykate.com/generominos/)
 
 ### What should I do with this?
 
